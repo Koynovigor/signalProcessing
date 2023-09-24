@@ -11,7 +11,7 @@
 #define Port 10243
 #define Bufer 255
 
-// Объявление обработчика сигналов
+// РћР±СЉСЏРІР»РµРЅРёРµ РѕР±СЂР°Р±РѕС‚С‡РёРєР° СЃРёРіРЅР°Р»РѕРІ
 volatile sig_atomic_t wasSigHup = 0;
 void sigHupHandler(int r) {
 	wasSigHup = 1;
@@ -19,9 +19,9 @@ void sigHupHandler(int r) {
 
 int main() {
 	int _socket = 0;
-	_socket = socket(AF_INET, SOCK_STREAM, 0); // Создание сокета
+	_socket = socket(AF_INET, SOCK_STREAM, 0); // РЎРѕР·РґР°РЅРёРµ СЃРѕРєРµС‚Р°
 
-	// Указываем адрес и порт для привязки соккета
+	// РЈРєР°Р·С‹РІР°РµРј Р°РґСЂРµСЃ Рё РїРѕСЂС‚ РґР»СЏ РїСЂРёРІСЏР·РєРё СЃРѕРєРєРµС‚Р°
 	struct sockaddr_in _sockaddr;	
 	memset(&_sockaddr, 0, sizeof(_sockaddr));
 	_sockaddr.sin_family = AF_INET;
@@ -31,14 +31,14 @@ int main() {
 	listen(_socket, NumberCons);
 	printf("Server listen\n Port: ", Port);
 
-	// Регистрация обработчика сигнала
+	// Р РµРіРёСЃС‚СЂР°С†РёСЏ РѕР±СЂР°Р±РѕС‚С‡РёРєР° СЃРёРіРЅР°Р»Р°
 	struct sigaction sa;
-	sigaction(SIGHUP, NULL, &sa);	// Заливаем нужные структуры
-	sa.sa_handler = sigHupHandler;	// Модифицируем
-	sa.sa_flags |= SA_RESTART;		// Устанавливаем флаги
-	sigaction(SIGHUP, &sa, NULL);	// Заливаем в ядро
+	sigaction(SIGHUP, NULL, &sa);	// Р—Р°Р»РёРІР°РµРј РЅСѓР¶РЅС‹Рµ СЃС‚СЂСѓРєС‚СѓСЂС‹
+	sa.sa_handler = sigHupHandler;	// РњРѕРґРёС„РёС†РёСЂСѓРµРј
+	sa.sa_flags |= SA_RESTART;	// РЈСЃС‚Р°РЅР°РІР»РёРІР°РµРј С„Р»Р°РіРё
+	sigaction(SIGHUP, &sa, NULL);	// Р—Р°Р»РёРІР°РµРј РІ СЏРґСЂРѕ
 
-	// Блокировка сигнала
+	// Р‘Р»РѕРєРёСЂРѕРІРєР° СЃРёРіРЅР°Р»Р°
 	sigset_t origMask;
 	sigset_t blockedMask;
 	sigemptyset(&blockedMask);
@@ -52,12 +52,12 @@ int main() {
 	char data[Bufer] = { 0 };
 
 	while (1) {
-		// Работа основного цикла
+		// Р Р°Р±РѕС‚Р° РѕСЃРЅРѕРІРЅРѕРіРѕ С†РёРєР»Р°
 		int maxFd = _socket;
 		fd_set fds;
-		// Подготовка спсика файловых дескрипторов
+		// РџРѕРґРіРѕС‚РѕРІРєР° СЃРїСЃРёРєР° С„Р°Р№Р»РѕРІС‹С… РґРµСЃРєСЂРёРїС‚РѕСЂРѕРІ
 		FD_ZERO(&fds);
-		FD_SET(_socket, &fds); // Серверный файловый дескриптор
+		FD_SET(_socket, &fds); // РЎРµСЂРІРµСЂРЅС‹Р№ С„Р°Р№Р»РѕРІС‹Р№ РґРµСЃРєСЂРёРїС‚РѕСЂ
 		for (int i = 0; i < clients_num; i++) {
 			FD_SET(clients[i], &fds);
 			if (clients[i] > maxFd) {
