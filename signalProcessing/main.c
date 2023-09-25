@@ -64,19 +64,21 @@ int main() {
 				maxFd = clients[i];
 			}
 		}
-
+		// Вызов функции pselect(), которая временно разблокирует
+		// необходимый сигнал и дождётся одного из трёх событий:
 		if (pselect(maxFd + 1, &fds, NULL, NULL, NULL, &origMask) == -1){
 			if (errno == EINTR) {
 				printf("pselect ERROR");
 				return 1;
 			}
 		}
+		// получение сигнала
 		if (wasSigHup == 1) {
 			printf("Stoping\n");
 			wasSigHup = 0;
 			break;
 		}
-
+		// новый запрос на установление соединения
 		if (FD_ISSET(_socket, &fds)) {
 			int connection = accept(_socket, NULL, NULL);
 			if (clients_num + 1 > NumberCons) {
@@ -88,7 +90,7 @@ int main() {
 			clients_num++;
 			printf("Successful connection: %d\n", connection);
 		}
-
+		// новые данные в установленном соединении
 		for (int i = 0; i < clients_num; i++) {
 			if (FD_ISSET(clients[i], &fds)) {
 				memset(&data, 0, Bufer);
