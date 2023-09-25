@@ -67,7 +67,7 @@ int main() {
 		// Вызов функции pselect(), которая временно разблокирует
 		// необходимый сигнал и дождётся одного из трёх событий:
 		if (pselect(maxFd + 1, &fds, NULL, NULL, NULL, &origMask) == -1){
-			if (errno == EINTR) {
+			if (errno != EINTR) {
 				printf("pselect ERROR");
 				return 1;
 			}
